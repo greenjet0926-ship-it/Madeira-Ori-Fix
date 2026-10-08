@@ -40,9 +40,11 @@ compile_one() {
         echo "OK"
         SUCCEEDED=$((SUCCEEDED + 1))
     else
-        echo "FAILED"
-        FAILED=$((FAILED + 1))
-        FAILED_FILES="$FAILED_FILES $name"
+    echo "FAILED"
+    echo "----- compiler error: $name -----"
+    cat "$OBJ_DIR/$name.err" || true
+    echo "----- end compiler error: $name -----"
+    FAILED=$((FAILED + 1))
     fi
 }
 
@@ -75,9 +77,11 @@ compile_unixlib() {
         echo "OK"
         SUCCEEDED=$((SUCCEEDED + 1))
     else
-        echo "FAILED"
-        FAILED=$((FAILED + 1))
-        FAILED_FILES="$FAILED_FILES $name"
+    echo "FAILED"
+    echo "----- compiler error: $name -----"
+    cat "$OBJ_DIR/$name.err" || true
+    echo "----- end compiler error: $name -----"
+    FAILED=$((FAILED + 1))
     fi
 }
 
