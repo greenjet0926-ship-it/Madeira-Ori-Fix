@@ -722,13 +722,6 @@ jobs:
         env:
           PAGEZERO_EXPERIMENT: ${{ inputs.pagezero_experiment }}
 
-      # Replacement XInput DLLs (ARM64EC). Overwrites the checked-in Wine
-      # built-ins in the working tree before xcodebuild bundles the folder.
-      - name: Build XInput DLLs (ARM64EC + i386)
-        run: |
-          set -euxo pipefail
-          bash build/xinput/build.sh
-
       # Wine Mono: the .NET Framework runtime Wine's mscoree needs for managed
       # executables (OneShot: World Machine Edition, FNA/XNA/MonoGame games).
       # Version must match WINE_MONO_VERSION in the fork's mscoree. Bundled as
