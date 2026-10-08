@@ -615,7 +615,7 @@ jobs:
           print('%s -> %s (%d bytes)' % (air, hdr, len(d)))
           PY
           SH="$PWD/build/dxmt-ios/shader-headers"
-          SRC="$PWD/research/dxmt/src/airconv/shaders"
+          SRC="$PWD/dxmt/src/airconv/shaders"
           mkdir -p "$SH"
           for m in "$SRC"/*.metal; do
             n="$(basename "$m" .metal)"
@@ -631,7 +631,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            research/dxmt/build-pe
+            dxmt/build-pe
             build/dxmt-ios/obj
             app/Madeira/libdxmt_combined.a
             app/Madeira/aarch64-windows
@@ -643,10 +643,10 @@ jobs:
         if: steps.dxmt.outputs.cache-hit != 'true'
         run: |
           set -euxo pipefail
-          ln -sfn ../../toolchains research/dxmt/toolchains
+          ln -sfn ../../toolchains dxmt/toolchains
           export PATH="$PWD/toolchains/$MINGW/bin:/opt/homebrew/bin:$PATH"
           export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
-          cd research/dxmt
+          cd dxmt
           rm -rf build-pe
           meson setup --cross-file build-aarch64-win.txt --native-file build-osx.txt \
             -Dwine_build_path=../../wine/build-macos build-pe
@@ -867,7 +867,7 @@ jobs:
             artifacts/*.ipa
             /tmp/fex.log
             wine/build-macos/config.log
-            research/dxmt/build-pe/meson-logs/**
+            dxmt/build-pe/meson-logs/**
             build/ntdll-unix/obj/*.err
             build/win32u-unix/obj/*.err
             build/dxmt-ios/obj/*.err
