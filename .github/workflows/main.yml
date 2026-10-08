@@ -270,6 +270,21 @@ jobs:
           ln -sfn build-macos wine/build-arm64ec
           echo "build-arm64ec -> $(readlink wine/build-arm64ec)"
 
+      - name: Cache FFmpeg for iOS
+        id: ffmpeg
+        uses: actions/cache@v4
+        with:
+          path: toolchains/ffmpeg-ios
+          key: ffmpeg-7.1.1-${{ env.CACHE_V }}
+
+      - name: FFmpeg for iOS
+        if: steps.ffmpeg.outputs.cache-hit != 'true'
+        run: |
+          set -euxo pipefail
+          bash build/ffmpeg/build.sh
+          test -f toolchains/ffmpeg-ios/include/libavcodec/avcodec.h
+          ls -l toolchains/ffmpeg-ios/lib/*.a
+
       # ==============================================================
       # NATIVE LIBS — GnuTLS must precede ntdll-unix: bcrypt, secur32
       # and crypt32 include $REPO_ROOT/toolchains/gnutls-ios/include.
