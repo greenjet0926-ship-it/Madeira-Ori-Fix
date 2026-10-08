@@ -8,7 +8,7 @@ on:
         type: boolean
         default: false
   push:
-    branches: [main, wow64]
+    branches: [wow64]
     paths:
       - "app/**"
       - "build/**"
