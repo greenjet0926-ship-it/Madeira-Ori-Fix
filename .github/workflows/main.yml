@@ -794,12 +794,26 @@ jobs:
           ):
               p = root / name
               s = p.read_text()
+
+              # Remove the duplicated nested qualifier emitted in this interface.
+              s = s.replace(
+                  "StikJIT::StikJIT.StikJIT::",
+                  "StikJIT::StikJIT."
+              )
+
+              # Preserve StikJIT's module qualifier: its module and public enum
+              # share a name, so replacing this :: with a dot breaks type lookup.
+              marker = "__STIKJIT_MODULE_QUALIFIER__"
+              s = s.replace("StikJIT::", marker)
               count = s.count("::")
-              if count:
-                  p.write_text(s.replace("::", "."))
-              print(f"{name}: normalized {count} occurrences")
-              if "::" in p.read_text():
-                  raise SystemExit(f"Unpatched :: syntax remains in {name}")
+              s = s.replace("::", ".")
+              s = s.replace(marker, "StikJIT::")
+
+              p.write_text(s)
+              print(f"{name}: normalized {count} other qualifiers")
+
+              if "::" in s.replace("StikJIT::", ""):
+                  raise SystemExit(f"Unexpected :: syntax remains in {name}")
           PY
 
       - name: Build Madeira.app
