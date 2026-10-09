@@ -51,9 +51,9 @@ jobs:
             for candidate in /Applications/Xcode_2*.app /Applications/Xcode.app; do
               [ -d "$candidate" ] || continue
               real="$(cd "$candidate" && pwd -P)"
-              case "$real" in
-                *[Bb]eta*|*[Rr][Cc]*|*[Cc]andidate*|*[Pp]review*) continue ;;
-              esac
+              if printf '%s\n' "$real" | grep -Eiq 'beta|rc|candidate|preview'; then
+                continue
+              fi
               printf '%s\n' "$real"
             done | sort -uV | tail -1
           )
