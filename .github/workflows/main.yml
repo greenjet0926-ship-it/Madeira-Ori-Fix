@@ -751,6 +751,30 @@ jobs:
           test -f "app/Madeira/mono/wine-mono-${VER}/bin/libmono-2.0-x86_64.dll"
           du -sh "app/Madeira/mono/wine-mono-${VER}"
 
+      - name: Normalize StikJIT Swift interfaces
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          root = Path(
+              "app/Frameworks/StikJIT.xcframework/ios-arm64/"
+              "StikJIT.framework/Modules/StikJIT.swiftmodule"
+          )
+          for name in (
+              "arm64-apple-ios.swiftinterface",
+              "arm64-apple-ios.private.swiftinterface",
+          ):
+              p = root / name
+              s = p.read_text()
+              count = s.count("::")
+              if count:
+                  p.write_text(s.replace("::", "."))
+              print(f"{name}: normalized {count} occurrences")
+              if "::" in p.read_text():
+                  raise SystemExit(f"Unpatched :: syntax remains in {name}")
+          PY
+
       - name: Build Madeira.app
         env:
           PAGEZERO_EXPERIMENT: ${{ inputs.pagezero_experiment }}
