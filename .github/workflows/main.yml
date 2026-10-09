@@ -808,14 +808,6 @@ jobs:
               count = s.count("::")
               s = s.replace("::", ".")
 
-              # Preserve StikJIT's module qualifier: its module and public enum
-              # share a name, so replacing this :: with a dot breaks type lookup.
-              marker = "__STIKJIT_MODULE_QUALIFIER__"
-              s = s.replace("StikJIT::", marker)
-              count = s.count("::")
-              s = s.replace("::", ".")
-              s = s.replace(marker, "StikJIT::")
-
               p.write_text(s)
               print(f"{name}: normalized {count} other qualifiers")
 
