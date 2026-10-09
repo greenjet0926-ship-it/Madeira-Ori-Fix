@@ -610,7 +610,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: build/dxmt-ios/shader-headers
-          key: shaders-1f7acaa-${{ env.CACHE_V }}
+          key: shaders-xcode27-metalflags-v1-${{ env.CACHE_V }}
 
       - name: Generate airconv shader headers
         if: steps.shaders.outputs.cache-hit != 'true'
@@ -630,6 +630,20 @@ jobs:
           SH="$PWD/build/dxmt-ios/shader-headers"
           SRC="$PWD/dxmt/src/airconv/shaders"
           mkdir -p "$SH"
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path("dxmt/src/airconv/shaders/air_tessellation.metal")
+          s = p.read_text()
+          old = "return __metal_atomic_fetch_add_explicit(out_count, 1, int(memory_order_relaxed), __METAL_MEMORY_SCOPE_THREADGROUP__);"
+          new = "return __metal_atomic_fetch_add_explicit(out_count, 1, int(memory_order_relaxed), __METAL_MEMORY_SCOPE_THREADGROUP__, __METAL_MEMORY_FLAGS_NONE__);"
+
+          if old not in s:
+              raise SystemExit("Expected DXMT shader line not found; refusing to patch.")
+
+          p.write_text(s.replace(old, new, 1))
+          print("Applied Xcode 27 Metal atomic compatibility patch.")
+          PY
           for m in "$SRC"/*.metal; do
             n="$(basename "$m" .metal)"
             xcrun -sdk macosx metal -o "$SH/$n.air" -c "$m" \
@@ -650,7 +664,7 @@ jobs:
             app/Madeira/aarch64-windows
           # Hashes the unix-side build script and its in-place submodule
           # patches so a pacing change actually rebuilds libdxmt_combined.a.
-          key: dxmt-1f7acaa-${{ hashFiles('build/dxmt-ios/build.sh', 'build/dxmt-ios/*.py') }}-${{ env.CACHE_V }}
+          key: dxmt-xcode27-metalflags-v1-${{ hashFiles('build/dxmt-ios/build.sh', 'build/dxmt-ios/*.py') }}-${{ env.CACHE_V }}
 
       - name: DXMT
         if: steps.dxmt.outputs.cache-hit != 'true'
