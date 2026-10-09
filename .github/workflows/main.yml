@@ -47,7 +47,7 @@ jobs:
           # than stable releases and may introduce toolchain regressions.
           # Resolve symlinks before filtering, since version-numbered aliases
           # can point to an app whose real path contains "_beta".
-          NEWEST="$(
+          NEWEST=$(
             for candidate in /Applications/Xcode_2*.app /Applications/Xcode.app; do
               [ -d "$candidate" ] || continue
               real="$(cd "$candidate" && pwd -P)"
@@ -56,7 +56,7 @@ jobs:
               esac
               printf '%s\n' "$real"
             done | sort -uV | tail -1
-          )"
+          )
           if [ -n "$NEWEST" ]; then
             echo "Selecting stable Xcode: $NEWEST"
             sudo xcode-select -s "$NEWEST/Contents/Developer"
