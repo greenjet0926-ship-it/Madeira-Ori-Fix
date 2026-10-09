@@ -795,11 +795,18 @@ jobs:
               p = root / name
               s = p.read_text()
 
-              # Remove the duplicated nested qualifier emitted in this interface.
+              # Collapse the duplicated module/enum qualifier first.
               s = s.replace(
                   "StikJIT::StikJIT.StikJIT::",
                   "StikJIT::StikJIT."
               )
+
+              # Remove the module prefix to avoid ambiguity with the
+              # StikJIT enum; top-level types remain in the same module.
+              s = s.replace("StikJIT::", "")
+
+              count = s.count("::")
+              s = s.replace("::", ".")
 
               # Preserve StikJIT's module qualifier: its module and public enum
               # share a name, so replacing this :: with a dot breaks type lookup.
@@ -812,8 +819,8 @@ jobs:
               p.write_text(s)
               print(f"{name}: normalized {count} other qualifiers")
 
-              if "::" in s.replace("StikJIT::", ""):
-                  raise SystemExit(f"Unexpected :: syntax remains in {name}")
+              if "::" in s:
+                  raise SystemExit(f"Unpatched :: syntax remains in {name}")
           PY
 
       - name: Build Madeira.app
