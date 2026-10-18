@@ -189,7 +189,7 @@ jobs:
       - name: Build Madeira Dock
         run: |
           set -euxo pipefail
-          git -C madeira-dock fetch https://github.com/greenjet0926-ship-it/madeira-dock.git launch-diagnostics
+          git -C madeira-dock fetch https://github.com/greenjet0926-ship-it/madeira-dock.git main
           git -C madeira-dock checkout FETCH_HEAD
           test -s madeira-dock/src/main.c
           bash build/madeira-dock/build.sh
