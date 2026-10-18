@@ -832,7 +832,14 @@ jobs:
           bash build/rppairing-ios/build.sh
           test -s app/Madeira/libmadeira_rppairing.a
           ls -lh app/Madeira/libmadeira_rppairing.a
-
+      
+      - name: Stage license files
+        run: |
+          set -euxo pipefail
+          bash build/stage-licenses.sh
+          test -s app/Madeira/licenses/LICENSE-MADEIRA-GPL-3.0.txt
+          test -s app/Madeira/licenses/LICENSE-MADEIRA-EXCEPTION.txt
+      
       - name: Build Madeira.app
         env:
           PAGEZERO_EXPERIMENT: ${{ inputs.pagezero_experiment }}
