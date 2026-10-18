@@ -306,6 +306,15 @@ jobs:
           test -f toolchains/ffmpeg-ios/include/libavcodec/avcodec.h
           ls -l toolchains/ffmpeg-ios/lib/*.a
 
+      - name: Stage FFmpeg libraries
+        run: |
+          set -euxo pipefail
+          for lib in libavformat libavcodec libswresample libavutil; do
+            test -s "toolchains/ffmpeg-ios/lib/$lib.a"
+            cp "toolchains/ffmpeg-ios/lib/$lib.a" "app/Madeira/$lib.a"
+          done
+          ls -lh app/Madeira/libav*.a
+
       # ==============================================================
       # NATIVE LIBS — GnuTLS must precede ntdll-unix: bcrypt, secur32
       # and crypt32 include $REPO_ROOT/toolchains/gnutls-ios/include.
