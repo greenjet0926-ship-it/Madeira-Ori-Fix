@@ -301,6 +301,8 @@ enum MadeiraDock {
         "session-offline-fallback", "session-offline-ready",
         "launch-call-entering", "launch-call-returned", "launch-callback-matched",
         "launch-request-submitted",
+        "launch-callback-seen", "launch-callback-kind",
+        "launch-callback-call-match", "launch-callback-payload-size",
         "launch-client-error", "launch-option-index", "launch-option-invalid", "launch-option-missing",
         "launch-update-wait", "launch-update-retry", "launch-update-ready",
         "launch-config-wait", "launch-config-gave-up", "launch-session-wait", "launch-session-gave-up",
