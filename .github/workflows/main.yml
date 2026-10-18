@@ -186,6 +186,14 @@ jobs:
           fi
           "toolchains/$MINGW/bin/aarch64-w64-mingw32-clang" --version
 
+      - name: Build Madeira Dock
+        run: |
+          set -euxo pipefail
+          test -s madeira-dock/src/main.c
+          bash build/madeira-dock/build.sh
+          test -s app/Madeira/arm64ec-windows/dockhost.exe
+          test -s app/Madeira/arm64ec-windows/dock-notices.txt
+
       # ==============================================================
       # WINE
       #
